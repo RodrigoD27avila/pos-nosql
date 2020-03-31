@@ -179,8 +179,108 @@ db.italians.remove({_id: ObjectId(<id do mario>)})
 
 ### 17. Utilizando o framework agregate, liste apenas as pessoas com nomes iguais a sua respectiva mãe e que tenha gato ou cachorro.
 
+```javasrcript
+db.italians.aggregate([
+    {'$match':
+        {father: {$exists: 1}, $or: [{cat: {$exists:1}}, {dog: {$exists: 1}}]}]
+    },
+    {$project:
+        {firstname: 1, mother: 1, isEqual: {$cmp: ["$firstname", "$mother.firstname"]}}
+    },
+    {$match: {isEqual: 0}}])
+```
+
 ### 18. Utilizando aggregate framework, faça uma lista de nomes única de nomes. Faça isso usando apenas o primeiro nome
+
+```javascript
+ db.italians.distinct('firstname')
+
+ db.italians.aggregate([{$group: {_id:0, ItalianFirstName: {$addToSet: "$firstname"}}}])
+ ```
+
 
 ### 19. Agora faça a mesma lista do item acima, considerando nome completo.
 
+```javascript
+ db.italians.aggregate([
+     { $project: { fullName: { $concat: [ "$firstname", " ", "$surname" ] } } },
+     {$group: {_id:0, ItalianFullName: {$addToSet: "$fullName"}}}])
+```
+
 ### 20. Procure pessoas que gosta de Banana ou Maçã, tenham cachorro ou gato, mais de 20 e menos de 60 anos.
+ 
+ ```javascript
+ db.italians.find({favFruits: {$elemMatch: {$in: ["Banana", "Maçã"]}}, $or: [{dog: {$exists: 1}}, {cat: {$exists: 1}}], age: {$gt: 20, $lt: 60}})
+
+ ```
+
+# Exercicio 3
+
+
+### 1. Liste as ações com profit acima de 0.5 (limite a 10 o resultado)
+
+```javascript
+db.stocks.find({"Profit Margin": {$gt: 0.5}}).limit(10)
+```
+
+### 2. Liste as ações com perdas (limite a 10 novamente)
+```javascript
+db.stocks.find({"Performance (Year)": {$lt: 0}}).sort({"Performance (Month)": -1}).limit(10)
+```
+
+### 3. Liste as 10 ações mais rentáveis
+
+```javascript
+db.stocks.find().sort({"Profit Margin": 1).limit(10)
+```
+
+### 4. Qual foi o setor mais rentável?
+```javascript
+db.stocks.aggregate([{$group: { _id: {"Sector": "$Sector"}, totalAmount: {$sum: "$Profit Margin"}}}])
+```
+
+### 5. Ordene as ações pelo profit e usando um cursor, liste as ações.
+´´´javascript
+var cursor = db.stocks.find()
+var array = cursor.toArray().sort(function(a, b) {return a['Profit Margin'] - b['Profit Margin']})
+´´´
+
+### 6. Renomeie o campo “Profit Margin” para apenas “profit”.
+
+```javascript
+db.stocks.updateMany({}, {$rename: {"Profit Margin": "profit"}})
+```
+
+### 7. Agora liste apenas a empresa e seu respectivo resultado
+
+```javascript
+db.stocks.find({}, {'Company': 1, 'Price': 1, _id: 0})
+```
+
+### 8. Analise as ações. É uma bola de cristal na sua mão... Quais as três ações você investiria?
+
+```javascript
+db.stocks.aggregate([{ $sample: { size: 3 } }])
+```
+
+### 9. Liste as ações agrupadas por setor
+
+```javascript
+db.stocks.aggregate([{$group: { _id: {"Sector": "$Sector"}}}])
+```
+
+# Exercicio 4
+
+### 1. Liste as pessoas que enviaram e-mails (de forma distinta, ou seja, sem repetir). Quantas pessoas são?
+
+```javascript
+db.stocks.distinct('sender').length
+```
+
+### 2. Contabilize quantos e-mails tem a palavra “fraud”
+
+``` javascript
+db.stocks.createIndex( { "text": "text" } )
+db.stocks.find( { $text: { $search: "fraud" } } ).count()
+```
+

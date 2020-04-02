@@ -30,7 +30,7 @@ for x in range(50):
     cli.set(score, 0)
 
 print('HORA do BINGO!!!!')
-
+ 
 # 4 hora do bingo
 temGanhadores = False
 while not temGanhadores:

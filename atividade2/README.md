@@ -1,4 +1,4 @@
-# Exercicio 1
+# Exercício 1
 
 ### 1. Adicione outro Peixe e um Hamster com nome Frodo
 
@@ -53,7 +53,7 @@ db.pets.find({name: "Mike"})
 db.pets.find({name: "Mike", species: "Cachorro"})
 ```
 
-# Exercicio 2
+# Exercício 2
 
 ### 1.Liste/Conte todas as pessoas que tem exatamente 99 anos. Você pode usar um count para indicar a quantidade.
 
@@ -214,7 +214,7 @@ db.italians.aggregate([
 
  ```
 
-# Exercicio 3
+# Exercício 3
 
 
 ### 1. Liste as ações com profit acima de 0.5 (limite a 10 o resultado)
@@ -269,7 +269,7 @@ db.stocks.aggregate([{ $sample: { size: 3 } }])
 db.stocks.aggregate([{$group: { _id: {"Sector": "$Sector"}}}])
 ```
 
-# Exercicio 4
+# Exercício 4
 
 ### 1. Liste as pessoas que enviaram e-mails (de forma distinta, ou seja, sem repetir). Quantas pessoas são?
 
